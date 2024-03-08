@@ -42,13 +42,13 @@ case class DeepProductStore(store: PostgresStore[Product]) extends Store[Product
   ): Future[Either[String, Seq[Product]]] =
     store.findOrWhere(parameters)
 
-  override def insert(product: Product)(implicit
-                                        postgresFormat: PostgresFormat[Product],
-                                        executionContext: ExecutionContext): Future[Either[String, Boolean]] =
-    store.insert(product)
+  override def insert(entity: Product)(implicit
+                                       postgresFormat: PostgresFormat[Product],
+                                       executionContext: ExecutionContext): Future[Either[String, Boolean]] =
+    store.insert(entity)
 
-  override def update(id: UUID, product: Product)(implicit
-                                                  postgresFormat: PostgresFormat[Product],
-                                                  executionContext: ExecutionContext): Future[Either[String, Boolean]] =
-    store.update(id, product)
+  override def update(id: UUID, entity: Product)(implicit
+                                                 postgresFormat: PostgresFormat[Product],
+                                                 executionContext: ExecutionContext): Future[Either[String, Boolean]] =
+    store.update(id, entity)
 }

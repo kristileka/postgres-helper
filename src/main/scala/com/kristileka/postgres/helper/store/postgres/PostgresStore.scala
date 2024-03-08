@@ -222,16 +222,16 @@ case class PostgresStore[T](
   /**
     * This function inserts a record on the database
     *
-    * @param product          The Object Generic
+    * @param entity          The Object Generic
     * @param postgresFormat   The Formatter used to read/write the generic object
     * @param executionContext the implicit execution context
     * @return A Future monad of either String or Boolean if the insertion was successful
     */
-  override def insert(product: T)(implicit
-                                  postgresFormat: PostgresFormat[T],
-                                  executionContext: ExecutionContext): Future[Either[String, Boolean]] = {
+  override def insert(entity: T)(implicit
+                                 postgresFormat: PostgresFormat[T],
+                                 executionContext: ExecutionContext): Future[Either[String, Boolean]] = {
 
-    val parameters   = postgresFormat.recordToMap(product)
+    val parameters   = postgresFormat.recordToMap(entity)
     val keys         = parameters.keys.toList.sorted
     val placeholders = keys.map(key => s"$$$key").mkString(", ")
 
@@ -244,16 +244,16 @@ case class PostgresStore[T](
   /**
     * This function updates a record on the database
     * @param id The UUID of the record
-    * @param product The Object Generic
+    * @param entity The Object Generic
     * @param postgresFormat The Formatter used to read/write the generic object
     * @param executionContext the implicit execution context
     * @return A Future monad of either String or Boolean that determines whether the function was successful or not
     */
-  override def update(id: UUID, product: T)(implicit
-                                            postgresFormat: PostgresFormat[T],
-                                            executionContext: ExecutionContext): Future[Either[String, Boolean]] = {
+  override def update(id: UUID, entity: T)(implicit
+                                           postgresFormat: PostgresFormat[T],
+                                           executionContext: ExecutionContext): Future[Either[String, Boolean]] = {
 
-    val parameters = postgresFormat.recordToMap(product).removed("id")
+    val parameters = postgresFormat.recordToMap(entity).removed("id")
     val setClause =
       parameters.keys.map(key => s"$key = $$${key}").mkString(", ")
 

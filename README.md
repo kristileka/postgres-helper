@@ -15,6 +15,41 @@ to have a generic way of handling the Database operations and you can add any sp
 keeping
 the regular objects the same.
 
+
+Then the DeepStore classes are directly connected with the PostgresStore who builds queries based on the data you are 
+trying to operate on. Here is a simple Insert, and a Find All operation that the helper provides you with.
+
+```scala
+override def insert(entity: T)(implicit
+                               postgresFormat: PostgresFormat[T],
+                               executionContext: ExecutionContext): Future[Either[String, Boolean]] = {
+
+  val parameters = postgresFormat.recordToMap(product)
+  val keys = parameters.keys.toList.sorted
+  val placeholders = keys.map(key => s"$$$key").mkString(", ")
+
+  val query =
+    s"INSERT INTO $TABLE_NAME (${keys.mkString(", ")}) VALUES ($placeholders);"
+  PostgresQuery(query, parameters)
+    .queryResult()
+}
+
+override def findAll()(implicit
+                       postgresFormat: PostgresFormat[T],
+                       executionContext: ExecutionContext): Future[Either[String, Seq[T]]] = {
+  val query =
+    s"""
+       | SELECT * from $TABLE_NAME
+       |""".stripMargin
+  PostgresQuery(query).queryList().map {
+    case Left(error) => Left(error)
+    case Right(records) =>
+      Right(records.map(record => postgresFormat.recordResultToModel(record)))
+  }
+}
+```
+
+
 ## Requirements
 
 This is a simple example how to use that requires Java 11 and the libraries for scala that anorm/play-jdbc/postgres

@@ -41,15 +41,15 @@ case class DeepCustomerStore(store: PostgresStore[Customer]) extends Store[Custo
   ): Future[Either[String, Seq[Customer]]] =
     store.findOrWhere(parameters)
 
-  override def insert(product: Customer)(implicit
-                                         postgresFormat: PostgresFormat[Customer],
-                                         executionContext: ExecutionContext): Future[Either[String, Boolean]] =
-    store.insert(product)
+  override def insert(entity: Customer)(implicit
+                                        postgresFormat: PostgresFormat[Customer],
+                                        executionContext: ExecutionContext): Future[Either[String, Boolean]] =
+    store.insert(entity)
 
-  override def update(id: UUID, product: Customer)(
+  override def update(id: UUID, entity: Customer)(
       implicit
       postgresFormat: PostgresFormat[Customer],
       executionContext: ExecutionContext
   ): Future[Either[String, Boolean]] =
-    store.update(id, product)
+    store.update(id, entity)
 }
