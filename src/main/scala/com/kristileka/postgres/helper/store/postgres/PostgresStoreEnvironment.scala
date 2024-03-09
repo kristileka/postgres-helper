@@ -5,6 +5,10 @@ import com.kristileka.postgres.helper.store.{ Store, StoreEnvironment }
 
 import javax.inject.Inject
 
+/**
+ * Postgres Store Enviornment Provider
+ * @param postgresDriver
+ */
 case class PostgresStoreEnvironment @Inject()(postgresDriver: PostgresDriver) extends StoreEnvironment {
   override def getPostgresStore[T](tableName: String): Store[T] =
     PostgresStore[T](
